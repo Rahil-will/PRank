@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Wi-Fi</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .text {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .bar {
+    height: 12px;
+    background: #222;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+    transition: width 0.08s linear;
+  }
+
+  img {
+    display: none;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .shake {
+    animation: shake 0.4s;
+  }
+
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="loader">
+  <div class="text" id="statusText">Connecting to free Wi-Fi…</div>
+  <div class="bar">
+    <div class="progress" id="progress"></div>
+  </div>
+</div>
+
+<img src="image.png" id="finalImage" alt="">
+
+<audio id="sound" src="reveal.mp3" preload="auto"></audio>
+
+<script>
+  const progress = document.getElementById("progress");
+  const loader = document.getElementById("loader");
+  const image = document.getElementById("finalImage");
+  const text = document.getElementById("statusText");
+  const sound = document.getElementById("sound");
+
+  let percent = 0;
+
+  const messages = [
+    { p: 10, t: "Authenticating network…" },
+    { p: 35, t: "Optimizing bandwidth…" },
+    { p: 60, t: "Almost there…" },
+    { p: 80, t: "Finalizing connection…" },
+    { p: 92, t: "Stabilizing signal…" }
+  ];
+
+  const interval = setInterval(() => {
+    if (percent === 92) {
+      // fake pause
+      text.textContent = "Network unstable… retrying";
+      loader.classList.add("shake");
+      setTimeout(() => loader.classList.remove("shake"), 400);
+      return;
+    }
+
+    percent++;
+    progress.style.width = percent + "%";
+
+    messages.forEach(m => {
+      if (percent === m.p) text.textContent = m.t;
+    });
+
+    if (percent >= 100) {
+      clearInterval(interval);
+      sound.play();
+      loader.style.display = "none";
+      image.style.display = "block";
+    }
+  }, 100); // 10 seconds total
+</script>
+
+</body>
+</html>
